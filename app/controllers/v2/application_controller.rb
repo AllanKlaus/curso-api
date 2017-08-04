@@ -1,6 +1,7 @@
 module V2
   class ApplicationController < ActionController::API
     include DeviseTokenAuth::Concerns::SetUserByToken
+    include ErrorSerializer
     before_action :ensure_json_request
 
     # TOKEN
