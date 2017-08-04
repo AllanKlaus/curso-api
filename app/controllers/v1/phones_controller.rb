@@ -1,0 +1,44 @@
+module V1
+  class PhonesController < ApplicationController
+    before_action :set_contact, only: [:show, :create, :update, :destroy]
+    # GET /phones/1
+    def show
+      render json: @contact.phones
+    end
+
+    def create
+      @contact.phones << Phone.create(phone_params)
+
+      if @contact.save
+        render json: @contact.phones, status: :created, location: contact_phone_url(@contact)
+      else
+        render json: @contact.errors, status: :unprocessable_entity
+      end
+    end
+
+    def update
+      phone = Phone.find(phone_params[:id])
+      if phone.update(phone_params)
+        render json: @contact.phones
+      else
+        render json: @contact.errors, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      phone = Phone.find(phone_params[:id])
+      phone.destroy
+    end
+
+    private
+      # Use callbacks to share common setup or constraints between actions.
+      def set_contact
+        @contact = Contact.find(params[:contact_id])
+      end
+
+      # Only allow a trusted parameter "white list" through.
+      def phone_params
+        ActiveModelSerializers::Deserialization.jsonapi_parse(params)
+      end
+  end
+end
