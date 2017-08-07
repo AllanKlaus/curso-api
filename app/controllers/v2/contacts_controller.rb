@@ -6,13 +6,20 @@ module V2
     # GET /contacts
     def index
       page_number = params[:page].try(:[], :number)
-      page_number = params[:page] ? params[:page][:size] : 1
-      @contacts = Contact.all.page(page_number).per(params[:page][:size])
+      page_size = params[:page] ? params[:page][:size] : 1
+      @contacts = Contact.all.page(page_number).per(page_size)
 
       # Paginação via Headers
       # paginate json: @contacts
 
-      render json: @contacts
+      # CACHE CONTROL
+      # expires_in 30.seconds, public: true
+
+      # render json: @contacts if stale?(etag: @contacts)
+      # CACHE WITH ETAG
+      render json: @contacts if stale?(etag: @contacts)
+      # CACHE WITH Last Modified
+      # render json: @contacts if stale?(last_modified: @contacts.first.updated_at)
     end
 
     # GET /contacts/1
