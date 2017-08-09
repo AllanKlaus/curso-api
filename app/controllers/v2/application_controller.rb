@@ -25,7 +25,7 @@ module V2
     # end
 
     def ensure_json_request
-      return render nothing: true, status: :not_acceptable unless request.headers['Accept'] =~ /vnd\.api\+json/
+      return render body: nil, status: :not_acceptable unless request.headers['Accept'] =~ /vnd\.api\+json/
 
 
       # return if !request.get? && !request.headers['Content-Type'] =~ /vnd\.api\+json/
